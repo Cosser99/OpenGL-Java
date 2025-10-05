@@ -3,7 +3,9 @@ package engineTester;
 
 
 import org.lwjgl.opengl.Display;
+import org.lwjgl.util.vector.Vector3f;
 
+import entities.Entity;
 import models.RawModel;
 import models.TexturedModel;
 import renderEngine.DisplayManager;
@@ -12,14 +14,16 @@ import renderEngine.Renderer;
 import shaders.StaticShader;
 import textures.ModelTexture;
 
+
+//TODO: implement camera 
 public class MainGameLoop {
 
 	public static void main(String[] args) {
 		
 		DisplayManager.createDisplay();
 		Loader loader=new Loader();
-		Renderer renderer = new Renderer();
 		StaticShader shader= new StaticShader();
+		Renderer renderer = new Renderer(shader);
 		
 		float[] vertices= {
 				-0.5f,0.5f,0, //V1
@@ -41,17 +45,22 @@ public class MainGameLoop {
 				1,1,	//v2
 				1,0		//v3
 			};
-		RawModel model=loader.loadToVao(vertices,textureCoords,indices);
-		ModelTexture texture=new ModelTexture(loader.loadTexture("image"));
-		TexturedModel texturedModel = new TexturedModel(model,texture);
+		RawModel model = loader.loadToVao(vertices,textureCoords,indices);
+		
+		TexturedModel staticModel = new TexturedModel(model,new ModelTexture(loader.loadTexture("image")));
+		
+		Entity entity = new Entity(staticModel, new Vector3f(0,0,-1),0,0,0,1);
+
 		
 		while(!Display.isCloseRequested())
 		{
-			
+				//
+				entity.increasePosition(0, 0, -0.001f);
+				
 			renderer.prepare();
 			//game logic
 			shader.start();
-			renderer.render(texturedModel);
+			renderer.render(entity,shader);
 			shader.stop();
 			DisplayManager.updateDisplay();
 		}
