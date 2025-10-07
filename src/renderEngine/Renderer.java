@@ -34,8 +34,9 @@ public class Renderer {
 	public void prepare()
 	{
 		//ogni frame prepara opengl per render il frame
-		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
-		GL11.glClearColor(0.5f, 0.5f, 0.5f, 1);
+		GL11.glEnable(GL11.GL_DEPTH_TEST);
+		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT|GL11.GL_DEPTH_BUFFER_BIT);
+		GL11.glClearColor(0.92f, 0.07f, 0.44f, 1);
 		
 	}
 	public void render(Entity entity,StaticShader shader) {

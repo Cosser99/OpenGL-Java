@@ -5,6 +5,7 @@ package engineTester;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Vector3f;
 
+import entities.Camera;
 import entities.Entity;
 import models.RawModel;
 import models.TexturedModel;
@@ -50,16 +51,18 @@ public class MainGameLoop {
 		TexturedModel staticModel = new TexturedModel(model,new ModelTexture(loader.loadTexture("image")));
 		
 		Entity entity = new Entity(staticModel, new Vector3f(0,0,-1),0,0,0,1);
-
+		
+		Camera camera = new Camera();
 		
 		while(!Display.isCloseRequested())
 		{
 				//
 				entity.increasePosition(0, 0, -0.001f);
-				
+				camera.move();
 			renderer.prepare();
 			//game logic
 			shader.start();
+			shader.loadViewMatrix(camera);
 			renderer.render(entity,shader);
 			shader.stop();
 			DisplayManager.updateDisplay();
