@@ -11,6 +11,7 @@ import models.RawModel;
 import models.TexturedModel;
 import renderEngine.DisplayManager;
 import renderEngine.Loader;
+import renderEngine.OBJLoader;
 import renderEngine.Renderer;
 import shaders.StaticShader;
 import textures.ModelTexture;
@@ -26,38 +27,19 @@ public class MainGameLoop {
 		StaticShader shader= new StaticShader();
 		Renderer renderer = new Renderer(shader);
 		
-		float[] vertices= {
-				-0.5f,0.5f,0, //V1
-				-0.5f,-0.5f,0,//v2
-				0.5f,-0.5f,0,//v3
-				0.5f,0.5f,0//v4
-		};
 		
-		int[] indices=
-			{
-					0,1,3, //top left triangles
-					3,1,2	//bottom right triangles
-					
-			};
-		float[] textureCoords=
-			{
-				0,0, 	//v0
-				0,1,	//v1
-				1,1,	//v2
-				1,0		//v3
-			};
-		RawModel model = loader.loadToVao(vertices,textureCoords,indices);
+		RawModel model = OBJLoader.loadObjModel("stall", loader);
 		
-		TexturedModel staticModel = new TexturedModel(model,new ModelTexture(loader.loadTexture("image")));
+		TexturedModel staticModel = new TexturedModel(model,new ModelTexture(loader.loadTexture("stallTexture")));
 		
-		Entity entity = new Entity(staticModel, new Vector3f(0,0,-1),0,0,0,1);
+		Entity entity = new Entity(staticModel, new Vector3f(0,0,0),0,0,0,1);
 		
 		Camera camera = new Camera();
 		
 		while(!Display.isCloseRequested())
 		{
 				//
-				entity.increasePosition(0, 0, -0.001f);
+				entity.increaseRotation(0, 0.3f, 0);
 				camera.move();
 			renderer.prepare();
 			//game logic
