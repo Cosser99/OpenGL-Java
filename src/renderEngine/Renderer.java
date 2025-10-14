@@ -36,7 +36,8 @@ public class Renderer {
 		//ogni frame prepara opengl per render il frame
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT|GL11.GL_DEPTH_BUFFER_BIT);
-		GL11.glClearColor(0.92f, 0.07f, 0.44f, 1);
+		GL11.glClearColor(0,0,0,1);
+		//GL11.glClearColor(0.92f, 0.07f, 0.44f, 1);
 		
 	}
 	public void render(Entity entity,StaticShader shader) {
@@ -45,7 +46,7 @@ public class Renderer {
 		GL30.glBindVertexArray(rawModel.getVaoID());
 		GL20.glEnableVertexAttribArray(0);	//position
 		GL20.glEnableVertexAttribArray(1); //texturecoords
-		
+		GL20.glEnableVertexAttribArray(2); //normals
 		//
 		Matrix4f transformationMatrix=Maths.createTransformationMatrix(entity.getPosition(), entity.getRotX(), entity.getRotY(), entity.getRotZ(), entity.getScale());
 		shader.loadTransformationMatrix(transformationMatrix);
@@ -58,6 +59,7 @@ public class Renderer {
 		//GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, model.getVertexCount());
 		GL20.glDisableVertexAttribArray(0);	//position
 		GL20.glDisableVertexAttribArray(1); //texturecoords
+		GL20.glDisableVertexAttribArray(2); //normals
 		GL30.glBindVertexArray(0);
 	}
 	
