@@ -28,4 +28,20 @@ public class Maths {
 		Matrix4f.translate(negativeCameraPos, viewMatrix, viewMatrix);
 		return viewMatrix;
 	}
+	public static Vector3f getForward(Camera camera)
+	{
+		float yawRad = -(float) Math.toRadians(camera.getYaw());
+	    float pitchRad = -(float) Math.toRadians(camera.getPitch());	//OCCHIO sono negativi
+	    
+		Vector3f forward = new Vector3f(
+			    (float) (-Math.sin(yawRad) * Math.cos(pitchRad)), // x
+			    (float) Math.sin(pitchRad),                       // y
+			    (float) (-Math.cos(yawRad) * Math.cos(pitchRad))  // z
+			);
+
+
+			
+		forward.normalise();
+		return forward;
+	}
 }

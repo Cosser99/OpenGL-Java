@@ -4,6 +4,8 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.util.vector.Vector3f;
 
+import toolbox.Maths;
+
 public class Camera {
 	private Vector3f position = new Vector3f(0,0,0);
 	private float pitch;
@@ -23,43 +25,38 @@ public class Camera {
 
 		float deltaX = Mouse.getDX(); // movimento orizzontale dall’ultimo frame
 		float deltaY = Mouse.getDY(); // movimento verticale dall’ultimo frame
-	
 		yaw+=deltaX*MOUSE_SENS;
-		pitch-=deltaY*MOUSE_SENS;
-		
+		pitch-=deltaY*MOUSE_SENS;	//OCCHIO è negativo 
+		Vector3f forward=Maths.getForward(this);
 		if(Keyboard.isKeyDown(Keyboard.KEY_W))
 		{
-			position.z-=SPEED;
-		}
-		if(Keyboard.isKeyDown(Keyboard.KEY_D))
-		{
-			position.x+=SPEED;
-		}
-		if(Keyboard.isKeyDown(Keyboard.KEY_A))
-		{
-			position.x-=SPEED;
+			Vector3f.add(position, (Vector3f) new Vector3f(forward).scale(SPEED), position);
+			//position.z-=SPEED;
 		}
 		if(Keyboard.isKeyDown(Keyboard.KEY_S))
 		{
-			position.z+=SPEED;
+			Vector3f.add(position, (Vector3f) new Vector3f(forward).scale(-SPEED), position);
+			//position.z+=SPEED;
+		}
+		//STRAFING
+		Vector3f right = new Vector3f();
+		Vector3f.cross(forward, new Vector3f(0,1,0), right);
+		right.normalise();
+
+		if(Keyboard.isKeyDown(Keyboard.KEY_D)) {
+		    Vector3f.add(position, (Vector3f) new Vector3f(right).scale(SPEED), position);
+		}
+		if(Keyboard.isKeyDown(Keyboard.KEY_A)) {
+		    Vector3f.add(position, (Vector3f) new Vector3f(right).scale(-SPEED), position);
 		}
 		if(Keyboard.isKeyDown(Keyboard.KEY_Q))
 		{
-			yaw-=SPEED*5;
+			position.y-=SPEED;
 		}
 		if(Keyboard.isKeyDown(Keyboard.KEY_E))
 		{
-			yaw+=SPEED*5;
-		}
-		if(Keyboard.isKeyDown(Keyboard.KEY_LCONTROL))
-		{
-			position.y-=SPEED;
-		}
-		if(Keyboard.isKeyDown(Keyboard.KEY_SPACE))
-		{
 			position.y+=SPEED;
 		}
-		//TODO: Does not move on local
 		
 	}
 	

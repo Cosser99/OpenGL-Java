@@ -19,6 +19,7 @@ public class DisplayManager {
 			attribs.withProfileCore(true);
 			
 			try {
+				Display.setLocation(0, 0);
 				Display.setDisplayMode(new DisplayMode(WIDTH,HEIGHT));
 				Display.create(new PixelFormat(),attribs);
 				Display.setTitle("Cosser Game Engine");
