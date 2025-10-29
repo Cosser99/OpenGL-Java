@@ -12,10 +12,14 @@ public class Camera {
 	private float yaw;
 	private float roll;
 	private float SPEED;
+	private float minSPEED;
+	private float multiplier;
 	private float MOUSE_SENS=0.1f;
 	public Camera()
 	{
-		this.SPEED=0.05f;
+		this.SPEED=0.15f;
+		minSPEED=SPEED;
+		this.multiplier=3;
 		Mouse.setGrabbed(true);
 
 	}
@@ -56,6 +60,14 @@ public class Camera {
 		if(Keyboard.isKeyDown(Keyboard.KEY_E))
 		{
 			position.y+=SPEED;
+		}
+		if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))
+		{
+			SPEED=minSPEED*multiplier;
+		}
+		else
+		{
+			SPEED=minSPEED;
 		}
 		
 	}

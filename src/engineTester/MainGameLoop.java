@@ -46,7 +46,7 @@ public class MainGameLoop {
 		
 		List<Entity> allCubes = new ArrayList<Entity>();
 		Random random = new Random();
-		for(int i=0;i<200;i++)
+		for(int i=0;i<500;i++)
 		{
 			float x = random.nextFloat()*100-50;
 			float y = random.nextFloat()*100-50;
@@ -61,6 +61,10 @@ public class MainGameLoop {
 		{
 				//
 				//entity.increaseRotation(0, 0.3f, 0);
+			for(Entity C : allCubes)
+			{
+				C.increaseRotation(0.1f, 0.1f, 0.1f);
+			}
 				camera.move();
 			//game logic
 
