@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Vector3f;
 
@@ -28,8 +29,6 @@ public class MainGameLoop {
 		
 		DisplayManager.createDisplay();
 		Loader loader=new Loader();
-		StaticShader shader= new StaticShader();
-		
 		
 		
 		RawModel model = OBJLoader.loadObjModel("stall", loader);
@@ -59,6 +58,14 @@ public class MainGameLoop {
 		
 		while(!Display.isCloseRequested())
 		{
+			//Change shader
+			
+			if (Keyboard.isKeyDown(Keyboard.KEY_Z)) {
+				renderer.setWireframe(true);
+			}
+			if (Keyboard.isKeyDown(Keyboard.KEY_X)) {
+				renderer.setWireframe(false);
+			}
 				//
 				//entity.increaseRotation(0, 0.3f, 0);
 			for(Entity C : allCubes)

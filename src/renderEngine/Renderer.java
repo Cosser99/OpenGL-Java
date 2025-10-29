@@ -13,7 +13,9 @@ import org.lwjgl.util.vector.Matrix4f;
 import entities.Entity;
 import models.RawModel;
 import models.TexturedModel;
+import shaders.ShaderProgram;
 import shaders.StaticShader;
+import shaders.WireShader;
 import textures.ModelTexture;
 import toolbox.Maths;
 
@@ -26,17 +28,21 @@ public class Renderer {
 	
 	
 	private Matrix4f projectionMatrix;
-	private StaticShader shader;
+	private ShaderProgram shader;
 	
-	public Renderer(StaticShader shader)
+	public Renderer(ShaderProgram shader)
 	{
-		this.shader = shader;
-		GL11.glEnable(GL11.GL_CULL_FACE);
-		GL11.glCullFace(GL11.GL_BACK);
-		createProjectionMatrix();
-		shader.start();
-		shader.loadProjectionMatrix(projectionMatrix);
-		shader.stop();
+	    this.shader = shader;
+	    GL11.glEnable(GL11.GL_CULL_FACE);
+	    GL11.glCullFace(GL11.GL_BACK);
+	    createProjectionMatrix();
+	    shader.start();
+	    if (shader instanceof StaticShader) {
+	        ((StaticShader) shader).loadProjectionMatrix(projectionMatrix);
+	    } else if (shader instanceof WireShader) {
+	        ((WireShader) shader).loadProjectionMatrix(projectionMatrix);
+	    }
+	    shader.stop();
 	}
 	
 	public void prepare()
@@ -73,7 +79,8 @@ public class Renderer {
 		GL20.glEnableVertexAttribArray(2); //normals
 		
 		ModelTexture texture = model.getTexture();
-		shader.loadShineVariables(texture.getShineDamper(), texture.getReflectivity());
+		if(shader instanceof StaticShader)
+			{((StaticShader) shader).loadShineVariables(texture.getShineDamper(), texture.getReflectivity());}
 		GL13.glActiveTexture(GL13.GL_TEXTURE0);
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, model.getTexture().getID());
 	}
@@ -87,7 +94,10 @@ public class Renderer {
 	private void prepareInstance(Entity entity)
 	{
 		Matrix4f transformationMatrix=Maths.createTransformationMatrix(entity.getPosition(), entity.getRotX(), entity.getRotY(), entity.getRotZ(), entity.getScale());
-		shader.loadTransformationMatrix(transformationMatrix);
+		if(shader instanceof StaticShader)
+			{((StaticShader) shader).loadTransformationMatrix(transformationMatrix);}
+		if(shader instanceof WireShader)
+			{((WireShader) shader).loadTransformationMatrix(transformationMatrix);}
 	}
 	
 	private void createProjectionMatrix()

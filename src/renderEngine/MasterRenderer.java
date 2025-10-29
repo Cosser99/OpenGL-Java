@@ -5,28 +5,55 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.lwjgl.opengl.GL11;
+
 import entities.Camera;
 import entities.Entity;
 import entities.Light;
 import models.TexturedModel;
 import shaders.StaticShader;
+import shaders.WireShader;
 
 public class MasterRenderer {
 	private StaticShader shader = new StaticShader();
 	private Renderer renderer = new Renderer(shader);
+	//WIREFRAME RENDER
+	private WireShader wireShader = new WireShader();
+    private Renderer wireRenderer = new Renderer(wireShader);
+    private boolean showWireframe = false;
 	
 	private Map<TexturedModel,List<Entity>> entities = new HashMap<TexturedModel,List<Entity>>();
 	
 	public void render(Light sun,Camera camera)
 	{
 		renderer.prepare();
-		shader.start();
-		shader.loadLight(sun);
-		shader.loadViewMatrix(camera);
-		
-		renderer.render(entities);
-		
-		shader.stop();
+		if (showWireframe) {
+            // Modalità wireframe OpenGL
+            GL11.glPolygonMode(
+                GL11.GL_FRONT_AND_BACK,
+                GL11.GL_LINE
+            );
+            
+            wireShader.start();
+            wireShader.loadViewMatrix(camera);
+            wireRenderer.render(entities);
+            wireShader.stop();
+
+            // Ripristina la modalità di riempimento
+            GL11.glPolygonMode(
+                GL11.GL_FRONT_AND_BACK,
+                GL11.GL_FILL
+            );
+
+        } else {
+            // Shader normale
+            shader.start();
+            shader.loadLight(sun);
+            shader.loadViewMatrix(camera);
+            renderer.render(entities);
+            shader.stop();
+        }
+
 		entities.clear();
 		
 	}
@@ -46,6 +73,9 @@ public class MasterRenderer {
 	public void cleanUp()
 	{
 		shader.cleanUp();
-		
+		wireShader.cleanUp();
 	}
+	public void setWireframe(boolean wireframe) {
+        this.showWireframe = wireframe;
+    }
 }
